@@ -2,19 +2,25 @@ import asyncio
 from json import dumps
 from queue import Queue
 import threading
-import time
 import cv2
 import mediapipe as mp
 import numpy as np
 import websockets
 from random import randint
+from uuid import getnode as get_mac
+mac = get_mac()
+
+SERVER_IP = '10.10.10.31'
+
 queue = Queue()
 def ws():
-    my_id = randint(0, 999999999)
+    my_id = mac
+    print('My address is ', mac)
     async def run():
         while True:
             try:
-                async with websockets.connect('ws://172.30.154.163:8001') as client:
+                async with websockets.connect(f'ws://{SERVER_IP}:8001') as client:
+                    print('Connected.')
                     await client.send(dumps({'display': False, 'camera': True, 'id': my_id}))
                     while True:
                         await client.send(queue.get())
@@ -45,6 +51,7 @@ def run():
 
                 if landmarks:
                     posture = {}
+                    # print(landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value])
                     for key in (
                         mp_pose.PoseLandmark.LEFT_SHOULDER,
                         mp_pose.PoseLandmark.LEFT_ELBOW,
@@ -74,5 +81,6 @@ def run():
             cap.release()
             cv2.destroyAllWindows()
 
-threading.Thread(target=ws).start()
-run()
+if __name__ == '__main__':
+    threading.Thread(target=ws).start()
+    run()

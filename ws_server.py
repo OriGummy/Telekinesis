@@ -6,6 +6,8 @@ import asyncio
 import websockets
 from ujson import loads
 
+from www.cv import SERVER_IP
+
 async def handle_client(websocket):
     print("New connection from", websocket.remote_address)
     asyncio.create_task(keep_alive(websocket))
@@ -17,6 +19,7 @@ async def handle_client(websocket):
         print('Is display.')
         await engine.add_new_display(client)
     else:
+        engine.add_camera()
         print('Is camera only')
         try:
             while True:
@@ -29,10 +32,13 @@ async def handle_client(websocket):
     await asyncio.Future()
         
 async def keep_alive(websocket):
-    while True:
-        await websocket.ping()
-        await asyncio.sleep(1)
+    try:
+        while True:
+            await websocket.ping()
+            await asyncio.sleep(1)
+    except:
+        pass
 
 async def start_websocket_server():
-    async with websockets.serve(handle_client, "172.30.154.163", 8001):
+    async with websockets.serve(handle_client, SERVER_IP, 8001):
         await asyncio.Future()  # run forever

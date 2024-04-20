@@ -2,6 +2,8 @@ from json import dumps
 from flask import Flask, send_from_directory
 import os
 
+from www.cv import SERVER_IP
+
 app = Flask(__name__)
 
 # Route to serve static files (CSS, JS, images)
@@ -20,4 +22,4 @@ if __name__ == '__main__':
     import socket
     hostname = socket.gethostname()
     IPAddr = socket.gethostbyname(hostname) 
-    app.run(host='172.30.154.163', port=5000)
+    app.run(host=SERVER_IP, port=5000)
