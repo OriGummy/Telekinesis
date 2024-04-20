@@ -1,4 +1,5 @@
 A library to dynamicly set up cameras and screens and control the screens remotely by pointing at them.
+Made with ❤️ at [OSHHack 12](https://oshhack12.devpost.com/).
 
 # Components
 Cameras - arbitrary machines running a python script (will be a web page in the future).
